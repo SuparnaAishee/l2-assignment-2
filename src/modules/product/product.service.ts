@@ -38,29 +38,35 @@ const updateProductToDB = async (
 };
 
 
-// const getSearchTermProductFromDB = async (searchTerm: string) => {
- 
-//   try {
-//     // Using regex for case-insensitive search in name and description
-//     const query = {
-//       $or: [
-//         { name: { $regex: searchTerm, $options: 'i' } },
-//         { description: { $regex: searchTerm, $options: 'i' } },
-//       ],
-//     };
+const deleteProductFromDB =async(id:string)=>{
+    const result = await Product.deleteOne({ _id: id });
+    return result;
+};
 
-//     const result = await Product.find(query);
-//     return result;
-//   } catch (error) {
-//     console.error('Error fetching products from DB:', error);
-//     throw error;
-//   }
-// };
+
+const getSearchTermProductFromDB = async (searchTerm:string) => {
+  try {
+   
+    const regex = new RegExp(searchTerm, 'i');
+    const result = await Product.find({
+      $or: [{ tags: { $in: [regex] } }, { name: regex }, { category: regex }],
+    }).exec();
+    return result;
+  } catch (err) {
+   console.error('Error seacrhing product:', err);
+    throw err;
+   
+  };
+};
 
 
 
 
 export const ProductServices = {
   createProductFromDB,
-  getAllProductsFromDB,getSingleProductFromDB,updateProductToDB,
+  getAllProductsFromDB,
+  getSingleProductFromDB,
+  updateProductToDB,
+  deleteProductFromDB,
+  getSearchTermProductFromDB,
 };

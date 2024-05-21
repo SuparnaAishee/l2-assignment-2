@@ -8,7 +8,7 @@ const port = 3000;
 app.use(express.json());
 
 app.use("/api/products",ProductRoutes);
-
+//app.use('/api/orders',OrderRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');

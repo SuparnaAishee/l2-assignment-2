@@ -98,37 +98,53 @@ if (!updateResult) {
     });
   }
 };
-
-
-
 //<---controller for update product end--->
 
+//<---controller for delete product start--->
+const deleteProduct=async(req:Request,res:Response)=>{
+try{
+const{productId} =req.params;
+const result = await ProductServices.deleteProductFromDB(productId);
+res.status(200).json({
+      success: true,
+      message: 'product is deleted sucessfully',
+      data: null,
+    });
+}catch(err){
+  res.status(500).json({
+    success: false,
+    message: 'Something went wrong!',
+    error: err,
+  });
+}
+}
+
+
+//<---controller for delete product end--->
+
 //<---controller for get product by search term--->
-// const getSearchTermProduct = async(req:Request,res:Response)=>{
-// try{
-   
-//   const searchTerm= req.query.searchTerm as string;
-//   const result = await ProductServices.getSearchTermProductFromDB(searchTerm);
-
-//  res.status(200).json({
-//    success: true,
-//    message: "Products matching search term '${searchTerm}' fetched successfully!",
-//    data: result,
-//  });
-// }catch(err){
-// res.status(500).json({
-//   success: false,
-//   message: 'Something went wrong!',
-//   error: err,
-// });
-// }
-// }
-
-
-
+const getSearchTermProduct = async (req: Request, res: Response) => {
+  try {
+    const searchTerm = req.query.searchTerm as string;
+    
+    const result = await ProductServices.getSearchTermProductFromDB(searchTerm);
+    res.status(200).json({
+      success: true,
+      message: "Products matching search term '${searchTerm}' fetched successfully!",
+      data: result,
+    });
+  } catch (err:any) {
+    console.error('Error fetching products by search term:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong!',
+      error: err.message || err,
+    });
+  }
+};
 //<---controller for get product by search term end--->
 
 
 export const ProductControllers={
-    createProduct,getAllProducts,getSingleProduct,updateProduct
+    createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,getSearchTermProduct,
 }

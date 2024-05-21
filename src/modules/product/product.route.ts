@@ -11,9 +11,11 @@ router.get('/',ProductControllers.getAllProducts);
 
 router.get('/:productId', ProductControllers.getSingleProduct);
 
-router.put('/:productId',ProductControllers.updateProduct)
+router.put('/:productId',ProductControllers.updateProduct);
 
-//router.get('/', ProductControllers.getSearchTermProduct);
+router.delete('/:productId',ProductControllers.deleteProduct);
+
+router.get('/?searchTerm=', ProductControllers.getSearchTermProduct);
 
 
 export const ProductRoutes = router;

@@ -44,8 +44,23 @@ const getAllOrderFromDB=async()=>{
     const orderResult = await Order.find();
     return orderResult;
   }
-}
+};
+
+export const getOrdersByEmail = async (email?: string) => {
+  try {
+   
+    if (email) {
+      return await Order.find({ email });
+    } else {
+      return  await Order.find({});
+    }
+
+  
+  } catch (error) {
+    throw new Error('Error fetching orders from database');
+  }
+};
 
 export const OrderServices = {
-    createOrderFromDB,getAllOrderFromDB
+    createOrderFromDB,getAllOrderFromDB,getOrdersByEmail
 }

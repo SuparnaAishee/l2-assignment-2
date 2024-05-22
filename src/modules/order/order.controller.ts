@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { OrderServices } from './order.service';
+import { OrderServices, getOrdersByEmail } from './order.service';
 
 //<---create controller for ordering product start--->
 export const createOrder = async (req: Request, res: Response) => {
@@ -40,11 +40,47 @@ const getAllOrder = async (req: Request, res: Response) => {
 
 //<---creating controller order for get all order end-->
 
+//<---creating controller order for get order by email start--->
 
+export const getOrdersByUserEmail = async (req: Request, res: Response) => {
+  try {
+    const email = req.query.email as string | undefined;// Extract email from query params
+
+    if (!email || typeof email !== 'string') {
+      return res.status(400).json({
+        success: false,
+        message: 'Email parameter is required and must be a string',
+      });
+    }
+
+    const orders = await getOrdersByEmail(email); // Pass email to service function
+
+    res.status(200).json({
+      success: true,
+      message: 'Orders fetched successfully for user email',
+      data:orders.map(order => ({
+                email: order.email,
+                productId: order.productId,
+                price: order.price,
+                quantity: order.quantity,
+            })),
+    });
+  } catch (err:any) {
+    console.error('Error fetching orders:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Something went wrong!',
+      error: err.message,
+    });
+  }
+};
+
+
+//<---creating controller order for get order by email end--->
 
 
 
 
 export const OrderController = {
-    createOrder,getAllOrder
+    createOrder,getAllOrder,getOrdersByUserEmail
 }

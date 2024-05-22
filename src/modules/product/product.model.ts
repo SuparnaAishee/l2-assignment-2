@@ -19,18 +19,17 @@ const InventoryDataSchema = new Schema<TInventoryData>(
   { _id: false },
 );
 
-const ProductSchema = new Schema<TProduct>({
-  name: { type: String,
-  required: [true,'Name is required'] },
-  description: { type: String, 
-    required: [true,'Description is required'] },
-  price: { type: Number,
-  required:[ true ,'Price is required']},
-  category: { type: String,
-  required: [true,'Category is required'] },
-  tags: { type: [String], required: true },
-  variants: { type: [VariantDataSchema], required: true  },
-  inventory: { type: InventoryDataSchema, required: true },
-});
+const ProductSchema = new Schema<TProduct,TInventoryData,TVariantData>(
+  {
+    name: { type: String, required: [true, 'Name is required'] },
+    description: { type: String, required: [true, 'Description is required'] },
+    price: { type: Number, required: [true, 'Price is required'] },
+    category: { type: String, required: [true, 'Category is required'] },
+    tags: { type: [String], required: true },
+    variants: { type: [VariantDataSchema], required: true },
+    inventory: { type: InventoryDataSchema, required: true },
+  },
+  { versionKey: false },
+);
 
 export const Product = model<TProduct>("Product",ProductSchema);

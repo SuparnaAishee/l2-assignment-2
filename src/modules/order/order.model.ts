@@ -12,7 +12,7 @@ const orderSchema = new Schema<TOrder>(
 
     quantity: { type: Number, required: true },
   },
- 
+ {versionKey:false},
 );
 
 export const  Order = model<TOrder>('Order',orderSchema);

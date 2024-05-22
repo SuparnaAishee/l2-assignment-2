@@ -1,6 +1,7 @@
-import { Document } from "mongoose";
+import { ObjectId } from "mongoose";
 import { TProduct } from "./product.interface";
 import { Product } from "./product.model";
+import { object } from "zod";
 
 
 const createProductFromDB =async(productData:TProduct)=>{
@@ -25,7 +26,7 @@ const updateProductToDB = async (
 ) => {
   try {
     const updateResult = await Product.findOneAndUpdate(
-      { _id: productId },
+      { _id:productId },
       { $set: productData },
       { new: true, runValidators: true },
     );

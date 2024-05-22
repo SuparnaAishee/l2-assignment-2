@@ -2,20 +2,41 @@ import { Request, Response } from "express";
 import { ProductServices } from "./product.service";
 import { Error } from "mongoose";
 import { Product } from "./product.model";
+import { ProductValidationSchema } from "./product.validation";
+import { z } from "zod";
 
 type err = Error;
 
 //<---controller for create product start--->
 const createProduct = async (req: Request, res: Response) => {
 
-    const productData = req.body
-const result = await ProductServices.createProductFromDB(productData)
+     try {
+         const productData = req.body;
 
-  res.status(200).json({
-    success: true,
-    message: 'Product created successfully!',
-    data: result,
-  });
+         // Validate productData using Zod schema
+         const zodProductData = ProductValidationSchema.parse(productData);
+
+         // Example: Check if a product with the same name already exists in the database
+         const existingProduct = await Product.findOne({
+           name: zodProductData.name,
+         });
+
+         if (existingProduct) {
+           // Product with the same data already exists, return a response indicating it's already created
+           return res.status(400).json({ error: 'Product already exists' });
+         }
+
+         // Product does not exist, proceed with sending a success response
+         res
+           .status(200)
+           .json({ message: 'Product does not exist, proceed with creation' });
+     } catch (err: any) {
+       res.status(500).json({
+         sucess: false,
+         message: err.message || 'something went wrong',
+         error: err,
+       });
+     }
 };
 //<---controller for create product end--->
 
@@ -66,30 +87,28 @@ const {productId }= req.params; // Extract productId from request parameters
 //<---controller for update product start--->
 const updateProduct = async (req: Request, res: Response) => {
   try {
-    const {productId} = req.params;
+    const { productId } = req.params;
     const productData = req.body;
 
     const updateResult = await ProductServices.updateProductToDB(
       productId,
       productData,
     );
-if (!updateResult) {
-  res.status(404).json({
-    success: false,
-    message: 'Product not found!',
-  });
-  return;
-}
-    
+     console.log('Update result:', updateResult);
+    if (!updateResult) {
+      res.status(404).json({
+        success: false,
+        message: 'Product not found!',
+      });
+      return;
+    }
+
     res.status(200).json({
       success: true,
       message: 'Product updated successfully!',
       data: updateResult,
     });
-
-    
-
-  } catch (err:any) {
+  } catch (err: any) {
     console.error('Error updating product:', err);
     res.status(500).json({
       success: false,

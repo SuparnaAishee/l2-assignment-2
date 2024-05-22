@@ -1,11 +1,20 @@
-import { Models } from "mongoose";
+import { Document } from 'mongoose';
 
 
-
-export type TOrder={
-    email:string;
+export type EmbeddedProduct={
     productId:string;
+    name:string;
     price:number;
-    quantity:number;
-
 }
+
+
+export type TOrder =  {
+  email:string;
+  
+  quantity:number;
+  productId:EmbeddedProduct;
+  name:EmbeddedProduct;
+  price:EmbeddedProduct
+
+};
+

@@ -1,18 +1,27 @@
 import { Request, Response } from 'express';
 import { OrderServices, getOrdersByEmail } from './order.service';
 
+import {z} from 'zod';
+import OrderValidateSchema from './order.validation';
 //<---create controller for ordering product start--->
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const orderData = req.body
-    const order = await OrderServices.createOrderFromDB(orderData)
-    res.status(201).json({
+    const orderData = req.body;
+    const zodOrderData = OrderValidateSchema.parse(orderData)
+    const order = await OrderServices.createOrderFromDB(zodOrderData)
+    res.status(200).json({
       success: true,
       message: 'Order created successfully!',
       data: order,
+
     });
+    
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+     res.status(500).json({
+       sucess: false,
+       message: err.message || 'something went wrong',
+       error: err,
+     });
   }
 };
 //<---creating controller order product end--->

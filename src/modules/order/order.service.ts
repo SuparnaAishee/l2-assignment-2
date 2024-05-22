@@ -1,3 +1,4 @@
+import { Console } from "console";
 import { Product } from "../product/product.model";
 
 import { Order } from "./order.model";
@@ -32,6 +33,7 @@ if (!product) {
     quantity,
   });
 return order;
+
 
     }catch(err:any){
 throw new Error ('Error in creating order ')

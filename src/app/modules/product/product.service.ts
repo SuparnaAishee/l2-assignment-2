@@ -10,10 +10,7 @@ const result = await Product.create(productData);
 return  result;
 };
 
-const getAllProductsFromDB = async()=>{
-    const result = await Product.find();
-    return result;
-};
+
 
 const getSingleProductFromDB = async(id:string)=>{
     const result = await Product.findOne({ _id: id });
@@ -44,30 +41,31 @@ const deleteProductFromDB =async(id:string)=>{
     return result;
 };
 
+ export const ProductListService = {
+  getAllProducts: async () => {
+    try {
+      return await Product.find({});
+    } catch (error) {
+      throw new Error('Error fetching all products from database');
+    }
+  },
 
-const getSearchTermProductFromDB = async (searchTerm:string) => {
-  try {
-   
-    const regex = new RegExp(searchTerm, 'i');
-    const result = await Product.find({
-      $or: [{ tags: { $in: [regex] } }, { name: regex }, { category: regex }],
-    }).exec();
-    return result;
-  } catch (err) {
-   console.error('Error seacrhing product:', err);
-    throw err;
-   
-  };
+  getProductsBySearchTerm: async (searchTerm: string) => {
+    try {
+      const regex = new RegExp(searchTerm, 'i'); // Case-insensitive regex for partial matching
+      return await Product.find({ name: { $regex: regex } });
+    } catch (error) {
+      throw new Error('Error fetching products by search term from database');
+    }
+  },
 };
-
-
 
 
 export const ProductServices = {
   createProductFromDB,
-  getAllProductsFromDB,
+  
   getSingleProductFromDB,
   updateProductToDB,
   deleteProductFromDB,
-  getSearchTermProductFromDB,
+
 };

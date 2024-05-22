@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ProductServices } from "./product.service";
+import { ProductListService, ProductServices } from "./product.service";
 import { Error } from "mongoose";
 import { Product } from "./product.model";
 import { ProductValidationSchema } from "./product.validation";
@@ -16,7 +16,7 @@ const createProduct = async (req: Request, res: Response) => {
          // Validate productData using Zod schema
          const zodProductData = ProductValidationSchema.parse(productData);
 
-         // Example: Check if a product with the same name already exists in the database
+         
          const existingProduct = await Product.findOne({
            name: zodProductData.name,
          });
@@ -24,13 +24,18 @@ const createProduct = async (req: Request, res: Response) => {
          if (existingProduct) {
            // Product with the same data already exists, return a response indicating it's already created
            return res.status(400).json({ error: 'Product already exists' });
-         }
+         } else {
+           // Create the product
+           const newProduct = new Product(zodProductData);
+           const createdProduct = await newProduct.save();
 
-         // Product does not exist, proceed with sending a success response
-         res
-           .status(200)
-           .json({ message: 'Product does not exist, proceed with creation' });
-     } catch (err: any) {
+           // Return success response with the created product data
+           return res.status(200).json({
+             success: true,
+             message: 'Product created successfully!',
+             data: createdProduct,
+           });
+         } } catch (err: any) {
        res.status(500).json({
          sucess: false,
          message: err.message || 'something went wrong',
@@ -40,26 +45,7 @@ const createProduct = async (req: Request, res: Response) => {
 };
 //<---controller for create product end--->
 
-//<---controller for get all product start--->
-const getAllProducts=async(req:Request,res:Response)=>{
 
-    try{
-const result = await ProductServices.getAllProductsFromDB();
-
-res.status(200).json({
-  success: true,
-  message: 'Products fetched successfully!',
-  data: result,
-});
-}catch(err){
-      res.status(500).json({
-        success: false,
-        message: 'Something went wrong!',
-        error: err,
-      });
-    }
-};
-//<---controller for get all product end--->
 
 
 //<---controller for get single product start--->
@@ -141,29 +127,35 @@ res.status(200).json({
 
 //<---controller for delete product end--->
 
-//<---controller for get product by search term--->
-const getSearchTermProduct = async (req: Request, res: Response) => {
-  try {
-    const searchTerm = req.query.searchTerm as string;
-    
-    const result = await ProductServices.getSearchTermProductFromDB(searchTerm);
+
+//<---controller for get all product or serachTerm product start--->
+
+const getProducts = async(req:Request,res:Response)=>{
+  try{
+    const searchTerm = req.query.searchTerm as string ; 
+    const products = searchTerm?  await ProductListService.getProductsBySearchTerm(searchTerm) : 
+      await ProductListService.getAllProducts();
+
     res.status(200).json({
       success: true,
-      message: "Products matching search term '${searchTerm}' fetched successfully!",
-      data: result,
+      message: 'Products fetched successfully!',
+      data: products,
     });
-  } catch (err:any) {
-    console.error('Error fetching products by search term:', err);
+     } catch (err:any) {
     res.status(500).json({
       success: false,
       message: 'Something went wrong!',
-      error: err.message || err,
+      error: err.message,
     });
   }
 };
-//<---controller for get product by search term end--->
+
+
+
+
+//<---controller for get all product or serachTerm product end--->
 
 
 export const ProductControllers={
-    createProduct,getAllProducts,getSingleProduct,updateProduct,deleteProduct,getSearchTermProduct,
+    createProduct,getSingleProduct,updateProduct,deleteProduct,getProducts
 }

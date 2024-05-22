@@ -13,7 +13,7 @@ type OrderData ={
 }
 
 
-const createOrderFromDB = async(orderData:OrderData)=>{
+ const createOrderFromDB = async(orderData:OrderData)=>{
     try{
 const {email,productId,quantity}=orderData
 
@@ -40,29 +40,24 @@ throw new Error ('Error in creating order ')
     }
 };
 
-
-const getAllOrderFromDB=async()=>{
-  {
-    const orderResult = await Order.find();
-    return orderResult;
-  }
-};
-
-export const getOrdersByEmail = async (email?: string) => {
-  try {
-   
-    if (email) {
-      return await Order.find({ email });
-    } else {
-      return  await Order.find({});
+ export const OrderListServices = {
+  getAllOrders: async () => {
+    try {
+      return await Order.find({});
+    } catch (error) {
+      throw new Error('Error fetching all orders from database');
     }
+  },
 
-  
-  } catch (error) {
-    throw new Error('Error fetching orders from database');
-  }
+  getOrdersByEmail: async (email: string) => {
+    try {
+      return await Order.find({ email });
+    } catch (error) {
+      throw new Error('Error fetching orders from database');
+    }
+  },
 };
 
-export const OrderServices = {
-    createOrderFromDB,getAllOrderFromDB,getOrdersByEmail
+export const OrderServices={
+  createOrderFromDB,
 }

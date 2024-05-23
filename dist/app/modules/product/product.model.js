@@ -20,4 +20,4 @@ const ProductSchema = new mongoose_1.Schema({
     variants: { type: [VariantDataSchema], required: true },
     inventory: { type: InventoryDataSchema, required: true },
 }, { versionKey: false });
-exports.Product = (0, mongoose_1.model)("Product", ProductSchema);
+exports.Product = (0, mongoose_1.model)('Product', ProductSchema);

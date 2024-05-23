@@ -5,7 +5,7 @@ import { OrderListServices, OrderServices } from './order.service';
 import OrderValidateSchema from './order.validation';
 import { ProductServices } from '../product/product.service';
 
-import { TOrder } from './order.iterface';
+import { TOrder} from './order.iterface';
 
 
 //<---create controller for ordering product start--->
@@ -86,11 +86,11 @@ const getOrders = async (req: Request, res: Response) => {
       message: 'Orders fetched successfully!',
       data: orders,
     });
-  } catch (err: any) {
+  } catch (error:any) {
     res.status(500).json({
       success: false,
       message: 'Something went wrong!',
-      error: err.message,
+      error: error.message,
     });
   }
 };

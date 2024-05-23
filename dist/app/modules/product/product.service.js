@@ -9,14 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProductServices = void 0;
+exports.ProductServices = exports.ProductListService = void 0;
 const product_model_1 = require("./product.model");
+//creating product services
 const createProductFromDB = (productData) => __awaiter(void 0, void 0, void 0, function* () {
     const result = yield product_model_1.Product.create(productData);
-    return result;
-});
-const getAllProductsFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield product_model_1.Product.find();
     return result;
 });
 const getSingleProductFromDB = (id) => __awaiter(void 0, void 0, void 0, function* () {
@@ -37,25 +34,28 @@ const deleteProductFromDB = (id) => __awaiter(void 0, void 0, void 0, function* 
     const result = yield product_model_1.Product.deleteOne({ _id: id });
     return result;
 });
-const getSearchTermProductFromDB = (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const regex = new RegExp(searchTerm, 'i');
-        const result = yield product_model_1.Product.find({
-            $or: [{ tags: { $in: [regex] } }, { name: regex }, { category: regex }],
-        }).exec();
-        return result;
-    }
-    catch (err) {
-        console.error('Error seacrhing product:', err);
-        throw err;
-    }
-    ;
-});
+exports.ProductListService = {
+    getAllProducts: () => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            return yield product_model_1.Product.find({});
+        }
+        catch (error) {
+            throw new Error('Error fetching all products from database');
+        }
+    }),
+    getProductsBySearchTerm: (searchTerm) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const regex = new RegExp(searchTerm, 'i');
+            return yield product_model_1.Product.find({ name: { $regex: regex } });
+        }
+        catch (error) {
+            throw new Error('Error fetching products by search term from database');
+        }
+    }),
+};
 exports.ProductServices = {
     createProductFromDB,
-    getAllProductsFromDB,
     getSingleProductFromDB,
     updateProductToDB,
     deleteProductFromDB,
-    getSearchTermProductFromDB,
 };

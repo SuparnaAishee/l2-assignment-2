@@ -13,7 +13,8 @@ const InventoryValidationSchema = zod_1.z.object({
     inStock: zod_1.z.boolean(),
 });
 exports.InventoryValidationSchema = InventoryValidationSchema;
-const ProductValidationSchema = zod_1.z.object({
+const ProductValidationSchema = zod_1.z
+    .object({
     name: zod_1.z.string().min(1, 'Name is required'),
     description: zod_1.z.string().min(1, 'Description is required'),
     price: zod_1.z.number().positive('Price must be a positive number'),
@@ -21,5 +22,18 @@ const ProductValidationSchema = zod_1.z.object({
     tags: zod_1.z.array(zod_1.z.string()).min(1, 'Tags are required'),
     variants: zod_1.z.array(VariantValidationSchema).min(1, 'Variants are required'),
     inventory: InventoryValidationSchema,
+})
+    .refine((value) => {
+    const { name, description, price, category, tags, variants, inventory } = value;
+    if (!name ||
+        !description ||
+        !price ||
+        !category ||
+        !tags ||
+        !variants ||
+        !inventory) {
+        throw new Error('Name, Description, Price, Category, Tags, Variants, and Inventory are required');
+    }
+    return true;
 });
 exports.ProductValidationSchema = ProductValidationSchema;

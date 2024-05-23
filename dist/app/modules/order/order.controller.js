@@ -12,16 +12,43 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderController = exports.createOrder = void 0;
+exports.OrderController = exports.cerateOrder = void 0;
 const order_service_1 = require("./order.service");
 const order_validation_1 = __importDefault(require("./order.validation"));
+const product_service_1 = require("../product/product.service");
 //<---create controller for ordering product start--->
-const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const cerateOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const orderData = req.body;
-        const zodOrderData = order_validation_1.default.parse(orderData);
+        const reqOrderData = req.body;
+        const zodOrderData = order_validation_1.default.parse(reqOrderData);
+        const id = zodOrderData.productId;
+        // check if the product exists
+        const product = yield product_service_1.ProductServices.getSingleProductFromDB(id);
+        if (!product) {
+            const error = new Error();
+            error.name = 'not-found';
+            error.message = 'The product does not exist!';
+            throw error;
+        }
+        // check if the product is in stock
+        if (product.inventory.inStock === false) {
+            const error = new Error();
+            error.message = 'Insufficient quantity!';
+            throw error;
+        }
+        if (zodOrderData.quantity > product.inventory.quantity) {
+            const error = new Error();
+            error.message = `Insufficient quantity ! Only ${product.inventory.quantity} products are available.`;
+            throw error;
+        }
         const order = yield order_service_1.OrderServices.createOrderFromDB(zodOrderData);
-        res.status(200).json({
+        // update product inventory after create an order
+        product.inventory = {
+            quantity: product.inventory.quantity - zodOrderData.quantity,
+            inStock: product.inventory.quantity > zodOrderData.quantity ? true : false,
+        };
+        yield product_service_1.ProductServices.updateProductToDB(id, product);
+        res.send({
             success: true,
             message: 'Order created successfully!',
             data: order,
@@ -35,59 +62,38 @@ const createOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         });
     }
 });
-exports.createOrder = createOrder;
+exports.cerateOrder = cerateOrder;
 //<---creating controller order product end--->
-//<---creating controller order for get all order start-->
-const getAllOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+// <---creating controller for getting orders, either all or by email start--->
+const getOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const orderResult = yield order_service_1.OrderServices.getAllOrderFromDB();
+        const email = req.query.email;
+        const orders = email
+            ? yield order_service_1.OrderListServices.getOrdersByEmail(email)
+            : yield order_service_1.OrderListServices.getAllOrders();
+        //checking if the search mail had any order ot not
+        if (orders.length === 0) {
+            const err = email
+                ? `No orders found for the provided ${email}`
+                : 'No orders found';
+            throw new Error(err);
+        }
         res.status(200).json({
             success: true,
-            message: 'Products fetched successfully!',
-            data: orderResult,
+            message: 'Orders fetched successfully!',
+            data: orders,
         });
     }
-    catch (err) {
+    catch (error) {
         res.status(500).json({
             success: false,
             message: 'Something went wrong!',
-            error: err,
+            error: error.message,
         });
     }
 });
-//<---creating controller order for get all order end-->
-//<---creating controller order for get order by email start--->
-// export const getOrdersByUserEmail = async (req: Request, res: Response) => {
-//   try {
-//     const email = req.query.email as string | undefined;// Extract email from query params
-//     if (!email || typeof email !== 'string') {
-//       return res.status(400).json({
-//         success: false,
-//         message: 'Email parameter is required and must be a string',
-//       });
-//     }
-//     const orders = await getOrdersByEmail(email); // Pass email to service function
-//     res.status(200).json({
-//       success: true,
-//       message: 'Orders fetched successfully for user email',
-//       data:orders.map(order => ({
-//                 email: order.email,
-//                 productId: order.productId,
-//                 price: order.price,
-//                 quantity: order.quantity,
-//             })),
-//     });
-//   } catch (err:any) {
-//     console.error('Error fetching orders:', err);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Something went wrong!',
-//       error: err.message,
-//     });
-//   }
-// };
-//<---creating controller order for get order by email end--->
+// <---creating controller for getting orders, either all or by email end--->
 exports.OrderController = {
-    createOrder: exports.createOrder, getAllOrder,
+    cerateOrder: exports.cerateOrder,
+    getOrders,
 };
-//getOrdersByUserEmail

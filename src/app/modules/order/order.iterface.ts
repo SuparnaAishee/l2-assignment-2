@@ -1,3 +1,4 @@
+import { Error } from "mongoose";
 
 
 export type TOrder = {
@@ -8,3 +9,5 @@ export type TOrder = {
 
   price: number;
 };
+
+

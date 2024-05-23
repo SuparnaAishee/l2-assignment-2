@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OrderServices = exports.getOrdersByEmail = void 0;
+exports.OrderServices = exports.OrderListServices = void 0;
 const product_model_1 = require("../product/product.model");
 const order_model_1 = require("./order.model");
 const createOrderFromDB = (orderData) => __awaiter(void 0, void 0, void 0, function* () {
@@ -28,30 +28,28 @@ const createOrderFromDB = (orderData) => __awaiter(void 0, void 0, void 0, funct
         });
         return order;
     }
-    catch (err) {
+    catch (error) {
         throw new Error('Error in creating order ');
     }
 });
-const getAllOrderFromDB = () => __awaiter(void 0, void 0, void 0, function* () {
-    {
-        const orderResult = yield order_model_1.Order.find();
-        return orderResult;
-    }
-});
-const getOrdersByEmail = (email) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        if (email) {
-            return yield order_model_1.Order.find({ email });
-        }
-        else {
+exports.OrderListServices = {
+    getAllOrders: () => __awaiter(void 0, void 0, void 0, function* () {
+        try {
             return yield order_model_1.Order.find({});
         }
-    }
-    catch (error) {
-        throw new Error('Error fetching orders from database');
-    }
-});
-exports.getOrdersByEmail = getOrdersByEmail;
+        catch (error) {
+            throw new Error('Error fetching all orders from database');
+        }
+    }),
+    getOrdersByEmail: (email) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            return yield order_model_1.Order.find({ email });
+        }
+        catch (error) {
+            throw new Error('Error fetching orders from database');
+        }
+    }),
+};
 exports.OrderServices = {
-    createOrderFromDB, getAllOrderFromDB, getOrdersByEmail: exports.getOrdersByEmail
+    createOrderFromDB,
 };

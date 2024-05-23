@@ -19,51 +19,44 @@ const createProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
         const productData = req.body;
         // Validate productData using Zod schema
         const zodProductData = product_validation_1.ProductValidationSchema.parse(productData);
-        // Example: Check if a product with the same name already exists in the database
         const existingProduct = yield product_model_1.Product.findOne({
             name: zodProductData.name,
         });
         if (existingProduct) {
-            // Product with the same data already exists, return a response indicating it's already created
             return res.status(400).json({ error: 'Product already exists' });
         }
-        // Product does not exist, proceed with sending a success response
-        res
-            .status(200)
-            .json({ message: 'Product does not exist, proceed with creation' });
+        else {
+            // Create the product
+            const newProduct = new product_model_1.Product(zodProductData);
+            const createdProduct = yield newProduct.save();
+            return res.status(200).json({
+                success: true,
+                message: 'Product created successfully!',
+                data: createdProduct,
+            });
+        }
     }
-    catch (err) {
-        res.status(500).json({
-            sucess: false,
-            message: err.message || 'something went wrong',
-            error: err,
+    catch (error) {
+        if (error.name === 'ZodError') {
+            const errorMessage = error.errors
+                .map((err) => err.message)
+                .join(', ');
+            return res.status(400).json({ error: errorMessage });
+        }
+        res
+            .status(500)
+            .json({
+            success: false,
+            message: 'Something went wrong',
+            error: error.message,
         });
     }
 });
 //<---controller for create product end--->
-//<---controller for get all product start--->
-const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    try {
-        const result = yield product_service_1.ProductServices.getAllProductsFromDB();
-        res.status(200).json({
-            success: true,
-            message: 'Products fetched successfully!',
-            data: result,
-        });
-    }
-    catch (err) {
-        res.status(500).json({
-            success: false,
-            message: 'Something went wrong!',
-            error: err,
-        });
-    }
-});
-//<---controller for get all product end--->
 //<---controller for get single product start--->
 const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const { productId } = req.params; // Extract productId from request parameters
+        const { productId } = req.params;
         const result = yield product_service_1.ProductServices.getSingleProductFromDB(productId);
         res.status(200).json({
             success: true,
@@ -100,12 +93,12 @@ const updateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
             data: updateResult,
         });
     }
-    catch (err) {
-        console.error('Error updating product:', err);
+    catch (error) {
+        console.error('Error updating product:', error);
         res.status(500).json({
             success: false,
             message: 'Something went wrong!',
-            error: err.message || err,
+            error: error.message || error,
         });
     }
 });
@@ -130,27 +123,32 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 //<---controller for delete product end--->
-//<---controller for get product by search term--->
-const getSearchTermProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+//<---controller for get all product or serachTerm product start--->
+const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const searchTerm = req.query.searchTerm;
-        const result = yield product_service_1.ProductServices.getSearchTermProductFromDB(searchTerm);
+        const products = searchTerm
+            ? yield product_service_1.ProductListService.getProductsBySearchTerm(searchTerm)
+            : yield product_service_1.ProductListService.getAllProducts();
         res.status(200).json({
             success: true,
-            message: "Products matching search term '${searchTerm}' fetched successfully!",
-            data: result,
+            message: 'Products fetched successfully!',
+            data: products,
         });
     }
     catch (err) {
-        console.error('Error fetching products by search term:', err);
         res.status(500).json({
             success: false,
             message: 'Something went wrong!',
-            error: err.message || err,
+            error: err.message,
         });
     }
 });
-//<---controller for get product by search term end--->
+//<---controller for get all product or serachTerm product end--->
 exports.ProductControllers = {
-    createProduct, getAllProducts, getSingleProduct, updateProduct, deleteProduct, getSearchTermProduct,
+    createProduct,
+    getSingleProduct,
+    updateProduct,
+    deleteProduct,
+    getProducts,
 };

@@ -7,7 +7,7 @@ To install and run the project locally, follow these steps:
 
 ### STEPS
 1. **Clone the repository:**
-git clone https://github.com/SuparnaAishee/l2-assignment-2
+git clone my repositry link
 
 2. **Navigate to the project directory**
 3. **Install dependencies:**
@@ -15,7 +15,7 @@ git clone https://github.com/SuparnaAishee/l2-assignment-2
  4. **Build the TypeScript code:**
  5. **Start the development server:**
 
- The server will start running at `http://localhost:3000`. You can now access the API endpoints using tools like Postman.
+ The server will start running at localhost:3000. You can now access the API endpoints using tools like Postman.
  
 ### Scripts
 **npm run start:dev to run the server**

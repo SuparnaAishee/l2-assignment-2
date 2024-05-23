@@ -9,12 +9,8 @@ const port = 3000;
 //parser for json
 app.use(express.json());
 
-app.use("/api/products",ProductRoutes);
-app.use("/api/orders",OrderRoutes);
- 
-
- 
-
+app.use('/api/products', ProductRoutes);
+app.use('/api/orders', OrderRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('Hello World!');

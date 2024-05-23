@@ -1,16 +1,14 @@
-import { Models } from "mongoose";
+import { Models } from 'mongoose';
 
-
-export type TVariantData={
-    type:string;
-    value:string;
+export type TVariantData = {
+  type: string;
+  value: string;
 };
 
 export type TInventoryData = {
-  quantity:number;
-  inStock:boolean;
+  quantity: number;
+  inStock: boolean;
 };
-
 
 //Create an interface representing a document in MongoDB.
 export type TProduct = {

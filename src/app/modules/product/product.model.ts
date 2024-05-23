@@ -1,6 +1,5 @@
-import { Schema, model } from "mongoose";
-import { TInventoryData, TProduct, TVariantData } from "./product.interface";
-
+import { Schema, model } from 'mongoose';
+import { TInventoryData, TProduct, TVariantData } from './product.interface';
 
 //defining schema
 
@@ -19,7 +18,7 @@ const InventoryDataSchema = new Schema<TInventoryData>(
   { _id: false },
 );
 
-const ProductSchema = new Schema<TProduct,TInventoryData,TVariantData>(
+const ProductSchema = new Schema<TProduct, TInventoryData, TVariantData>(
   {
     name: { type: String, required: [true, 'Name is required'] },
     description: { type: String, required: [true, 'Description is required'] },
@@ -32,4 +31,4 @@ const ProductSchema = new Schema<TProduct,TInventoryData,TVariantData>(
   { versionKey: false },
 );
 
-export const Product = model<TProduct>("Product",ProductSchema);
+export const Product = model<TProduct>('Product', ProductSchema);

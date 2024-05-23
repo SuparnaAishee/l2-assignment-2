@@ -1,6 +1,4 @@
-import { z } from "zod";
-
-
+import { z } from 'zod';
 
 //defining zod schema
 const VariantValidationSchema = z.object({
@@ -23,4 +21,8 @@ const ProductValidationSchema = z.object({
   inventory: InventoryValidationSchema,
 });
 
-export { ProductValidationSchema, VariantValidationSchema, InventoryValidationSchema };
+export {
+  ProductValidationSchema,
+  VariantValidationSchema,
+  InventoryValidationSchema,
+};

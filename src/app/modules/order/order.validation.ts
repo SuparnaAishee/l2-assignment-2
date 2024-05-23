@@ -13,6 +13,10 @@ const OrderValidateSchema = z.object({
     .min(1, 'Quantity must be a positive integer'),
 });
 
-
+// export const EmbeddedProductSchema = z.object({
+//   productId: z.string().min(1, 'Product ID is required'),
+//   name: z.string().min(1, 'Name is required'),
+//   price: z.number().positive('Price must be a positive number'),
+// });
 
 export default OrderValidateSchema;

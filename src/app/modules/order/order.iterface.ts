@@ -1,20 +1,16 @@
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 
+// export type EmbeddedProduct={
+//     productId:string;
+//     name:string;
+//     price:number;
+// }
 
-export type EmbeddedProduct={
-    productId:string;
-    name:string;
-    price:number;
-}
+export type TOrder = {
+  email: string;
 
+  quantity: number;
+  productId: string;
 
-export type TOrder =  {
-  email:string;
-  
-  quantity:number;
-  productId:EmbeddedProduct;
-  name:EmbeddedProduct;
-  price:EmbeddedProduct
-
+  price: number;
 };
-

@@ -1,46 +1,42 @@
-import { Console } from "console";
-import { Product } from "../product/product.model";
+import { Console } from 'console';
+import { Product } from '../product/product.model';
 
-import { Order } from "./order.model";
+import { Order } from './order.model';
+import { TOrder } from './order.iterface';
 
+// type OrderData ={
+//   email: string;
+//   productId: string;
+//   quantity: number;
+//   price:number;
+// }
 
+const createOrderFromDB = async (orderData: TOrder) => {
+  try {
+    const { email, productId, quantity } = orderData;
 
-type OrderData ={
-  email: string;
-  productId: string;
-  quantity: number;
-  price:number;
-}
-
-
- const createOrderFromDB = async(orderData:OrderData)=>{
-    try{
-const {email,productId,quantity}=orderData
-
-const product = await Product.findById(productId);
-if (!product) {
+    const product = await Product.findById(productId);
+    if (!product) {
       throw new Error('Product not found');
     }
 
-  const order = await Order.create({
-    email,
-    
+    const order = await Order.create({
+      email,
+
       productId: product._id.toString(),
 
       name: product.name,
       price: product.price,
-    
-    quantity,
-  });
-return order;
 
-
-    }catch(err:any){
-throw new Error ('Error in creating order ')
-    }
+      quantity,
+    });
+    return order;
+  } catch (err: any) {
+    throw new Error('Error in creating order ');
+  }
 };
 
- export const OrderListServices = {
+export const OrderListServices = {
   getAllOrders: async () => {
     try {
       return await Order.find({});
@@ -58,6 +54,6 @@ throw new Error ('Error in creating order ')
   },
 };
 
-export const OrderServices={
+export const OrderServices = {
   createOrderFromDB,
-}
+};

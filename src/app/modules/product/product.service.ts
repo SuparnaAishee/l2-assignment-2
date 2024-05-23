@@ -1,20 +1,17 @@
-import { ObjectId } from "mongoose";
-import { TProduct } from "./product.interface";
-import { Product } from "./product.model";
-import { object } from "zod";
+import { ObjectId } from 'mongoose';
+import { TProduct } from './product.interface';
+import { Product } from './product.model';
+import { object } from 'zod';
 
+const createProductFromDB = async (productData: TProduct) => {
+  const result = await Product.create(productData);
 
-const createProductFromDB =async(productData:TProduct)=>{
-const result = await Product.create(productData);
-
-return  result;
+  return result;
 };
 
-
-
-const getSingleProductFromDB = async(id:string)=>{
-    const result = await Product.findOne({ _id: id });
-    return result;
+const getSingleProductFromDB = async (id: string) => {
+  const result = await Product.findOne({ _id: id });
+  return result;
 };
 
 const updateProductToDB = async (
@@ -23,7 +20,7 @@ const updateProductToDB = async (
 ) => {
   try {
     const updateResult = await Product.findOneAndUpdate(
-      { _id:productId },
+      { _id: productId },
       { $set: productData },
       { new: true, runValidators: true },
     );
@@ -35,13 +32,12 @@ const updateProductToDB = async (
   }
 };
 
-
-const deleteProductFromDB =async(id:string)=>{
-    const result = await Product.deleteOne({ _id: id });
-    return result;
+const deleteProductFromDB = async (id: string) => {
+  const result = await Product.deleteOne({ _id: id });
+  return result;
 };
 
- export const ProductListService = {
+export const ProductListService = {
   getAllProducts: async () => {
     try {
       return await Product.find({});
@@ -60,12 +56,10 @@ const deleteProductFromDB =async(id:string)=>{
   },
 };
 
-
 export const ProductServices = {
   createProductFromDB,
-  
+
   getSingleProductFromDB,
   updateProductToDB,
   deleteProductFromDB,
-
 };

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 
-
+//error handdler
 export const notFoundHandler = (
   req: Request,
   res: Response,

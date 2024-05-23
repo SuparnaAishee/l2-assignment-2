@@ -4,12 +4,7 @@ import { Product } from '../product/product.model';
 import { Order } from './order.model';
 import { TOrder } from './order.iterface';
 
-// type OrderData ={
-//   email: string;
-//   productId: string;
-//   quantity: number;
-//   price:number;
-// }
+
 
 const createOrderFromDB = async (orderData: TOrder) => {
   try {
@@ -32,7 +27,7 @@ const createOrderFromDB = async (orderData: TOrder) => {
       quantity,
     });
     return order;
-  } catch (err: any) {
+  } catch (error) {
     throw new Error('Error in creating order ');
   }
 };

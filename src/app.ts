@@ -5,7 +5,7 @@ import { OrderRoutes } from './app/modules/order/order.route';
 import {  notFoundHandler } from './app/middlewares/handle.error';
 
 const app = express();
-const port = 3000;
+
 
 //parser for json
 app.use(express.json());

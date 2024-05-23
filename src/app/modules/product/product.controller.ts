@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ProductListService, ProductServices } from './product.service';
 import { Product } from './product.model';
 import { ProductValidationSchema } from './product.validation';
-import { z } from 'zod';
+
 
 
 
@@ -96,12 +96,12 @@ const updateProduct = async (req: Request, res: Response) => {
       message: 'Product updated successfully!',
       data: updateResult,
     });
-  } catch (err: any) {
-    console.error('Error updating product:', err);
+  } catch (error:any) {
+    console.error('Error updating product:', error);
     res.status(500).json({
       success: false,
       message: 'Something went wrong!',
-      error: err.message || err,
+      error: error.message || error,
     });
   }
 };

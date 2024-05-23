@@ -1,4 +1,4 @@
-import { Models } from 'mongoose';
+
 
 export type TVariantData = {
   type: string;

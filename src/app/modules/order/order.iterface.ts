@@ -1,4 +1,4 @@
-import mongoose, { Document } from 'mongoose';
+
 
 export type TOrder = {
   email: string;

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { OrderListServices, OrderServices } from './order.service';
 
-import { z } from 'zod';
+
 import OrderValidateSchema from './order.validation';
 import { ProductServices } from '../product/product.service';
 
@@ -38,9 +38,7 @@ export const cerateOrder = async (req: Request, res: Response) => {
       throw error;
     }
 
-    // create order
-    // const orderData = req.body;
-    // const zodOrderData = OrderValidateSchema.parse(orderData);
+    
 
     const order = await OrderServices.createOrderFromDB(zodOrderData);
 

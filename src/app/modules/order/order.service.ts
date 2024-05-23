@@ -13,6 +13,7 @@ import { TOrder } from './order.iterface';
 
 const createOrderFromDB = async (orderData: TOrder) => {
   try {
+    
     const { email, productId, quantity } = orderData;
 
     const product = await Product.findById(productId);

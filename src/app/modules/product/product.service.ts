@@ -1,8 +1,8 @@
-import { ObjectId } from 'mongoose';
+
 import { TProduct } from './product.interface';
 import { Product } from './product.model';
-import { object } from 'zod';
 
+//creating product services
 const createProductFromDB = async (productData: TProduct) => {
   const result = await Product.create(productData);
 
@@ -48,7 +48,7 @@ export const ProductListService = {
 
   getProductsBySearchTerm: async (searchTerm: string) => {
     try {
-      const regex = new RegExp(searchTerm, 'i'); // Case-insensitive regex for partial matching
+      const regex = new RegExp(searchTerm, 'i'); 
       return await Product.find({ name: { $regex: regex } });
     } catch (error) {
       throw new Error('Error fetching products by search term from database');

@@ -1,11 +1,10 @@
 import { Request, Response } from 'express';
 import { ProductListService, ProductServices } from './product.service';
-import { Error } from 'mongoose';
 import { Product } from './product.model';
 import { ProductValidationSchema } from './product.validation';
 import { z } from 'zod';
 
-type err = Error;
+
 
 //<---controller for create product start--->
 const createProduct = async (req: Request, res: Response) => {
@@ -20,26 +19,34 @@ const createProduct = async (req: Request, res: Response) => {
     });
 
     if (existingProduct) {
-      // Product with the same data already exists, return a response indicating it's already created
       return res.status(400).json({ error: 'Product already exists' });
     } else {
       // Create the product
       const newProduct = new Product(zodProductData);
       const createdProduct = await newProduct.save();
 
-      // Return success response with the created product data
       return res.status(200).json({
         success: true,
         message: 'Product created successfully!',
         data: createdProduct,
       });
     }
-  } catch (err: any) {
-    res.status(500).json({
-      sucess: false,
-      message: err.message || 'something went wrong',
-      error: err,
-    });
+  } catch (error:any) {
+   
+    if (error.name === 'ZodError') {
+      const errorMessage = error.errors
+        .map((err: any) => err.message)
+        .join(', ');
+      return res.status(400).json({ error: errorMessage });
+    }
+
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: 'Something went wrong',
+        error: error.message,
+      });
   }
 };
 //<---controller for create product end--->
@@ -47,8 +54,7 @@ const createProduct = async (req: Request, res: Response) => {
 //<---controller for get single product start--->
 const getSingleProduct = async (req: Request, res: Response) => {
   try {
-    const { productId } = req.params; // Extract productId from request parameters
-
+    const { productId } = req.params; 
     const result = await ProductServices.getSingleProductFromDB(productId);
 
     res.status(200).json({

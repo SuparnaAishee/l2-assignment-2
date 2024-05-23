@@ -10,7 +10,7 @@ export type TInventoryData = {
   inStock: boolean;
 };
 
-//Create an interface representing a document in MongoDB.
+//Create an interface 
 export type TProduct = {
   name: string;
   description: string;

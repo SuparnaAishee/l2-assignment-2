@@ -17,3 +17,11 @@ git clone https://github.com/SuparnaAishee/l2-assignment-2
 
  The server will start running at `http://localhost:3000`. You can now access the API endpoints using tools like Postman.
  
+### Scripts
+**npm run start:dev to run the server**
+
+**npm run lint to check error by eslint**
+
+**npm run prettier:fix for fix the writing format**
+
+**npm build for compile typescript**
